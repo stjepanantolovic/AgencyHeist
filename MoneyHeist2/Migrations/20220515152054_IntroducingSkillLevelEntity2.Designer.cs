@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MoneyHeist2.Data;
 
@@ -11,9 +12,10 @@ using MoneyHeist2.Data;
 namespace MoneyHeist2.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220515152054_IntroducingSkillLevelEntity2")]
+    partial class IntroducingSkillLevelEntity2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,8 +137,7 @@ namespace MoneyHeist2.Migrations
                 {
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Value")
                         .IsRequired()
@@ -147,7 +148,7 @@ namespace MoneyHeist2.Migrations
                     b.HasIndex("Value")
                         .IsUnique();
 
-                    b.ToTable("SkillLevels");
+                    b.ToTable("SkillLevel");
                 });
 
             modelBuilder.Entity("SkillSkillLevel", b =>

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "5G8CcNdkV4+cxN84Fb4CW7y7WZsoxTsmVCLWmVm5c3D1o8VUhA/pr9MOcUn+/DK35VWKnd+6pG80plGGl5Zfog==",
+  "dgSpecHash": "bnpWVvE9ZONcugGZ/y9jGNjSeDoU3macp66rk2w2JDCDrScJnkyMaBq1mcpmNvdpv92tDG9Y+N6x0ZZ19XrhSA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Johny Bravo\\source\\repos\\MoneyHeist2\\MoneyHeist2\\MoneyHeist2.csproj",
+  "projectFilePath": "C:\\Users\\Johny Bravo\\source\\repos\\MoneyHeist2\\AgencyHeist\\MoneyHeist2\\MoneyHeist2.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Johny Bravo\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",

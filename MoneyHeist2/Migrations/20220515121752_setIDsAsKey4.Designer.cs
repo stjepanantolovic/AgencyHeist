@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MoneyHeist2.Data;
 
@@ -11,9 +12,10 @@ using MoneyHeist2.Data;
 namespace MoneyHeist2.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220515121752_setIDsAsKey4")]
+    partial class setIDsAsKey4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,8 +47,7 @@ namespace MoneyHeist2.Migrations
                         .HasDefaultValueSql("NEWID()");
 
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("MainSkillID")
                         .HasColumnType("uniqueidentifier");
@@ -61,9 +62,6 @@ namespace MoneyHeist2.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
 
                     b.HasIndex("MainSkillID");
 
@@ -82,13 +80,9 @@ namespace MoneyHeist2.Migrations
                         .HasDefaultValueSql("NEWID()");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
 
                     b.ToTable("MemberStatus");
                 });
@@ -101,13 +95,9 @@ namespace MoneyHeist2.Migrations
                         .HasDefaultValueSql("NEWID()");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("Name")
-                        .IsUnique()
-                        .HasFilter("[Name] IS NOT NULL");
 
                     b.ToTable("Sex");
                 });
@@ -119,50 +109,15 @@ namespace MoneyHeist2.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
+                    b.Property<string>("Level")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
 
                     b.ToTable("Skill");
-                });
-
-            modelBuilder.Entity("MoneyHeist2.Entities.SkillLevel", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("Value")
-                        .IsUnique();
-
-                    b.ToTable("SkillLevels");
-                });
-
-            modelBuilder.Entity("SkillSkillLevel", b =>
-                {
-                    b.Property<Guid>("SkillLevelsID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("SkillsID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("SkillLevelsID", "SkillsID");
-
-                    b.HasIndex("SkillsID");
-
-                    b.ToTable("SkillSkillLevel");
                 });
 
             modelBuilder.Entity("MemberSkill", b =>
@@ -199,21 +154,6 @@ namespace MoneyHeist2.Migrations
                     b.Navigation("Sex");
 
                     b.Navigation("Status");
-                });
-
-            modelBuilder.Entity("SkillSkillLevel", b =>
-                {
-                    b.HasOne("MoneyHeist2.Entities.SkillLevel", null)
-                        .WithMany()
-                        .HasForeignKey("SkillLevelsID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MoneyHeist2.Entities.Skill", null)
-                        .WithMany()
-                        .HasForeignKey("SkillsID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
