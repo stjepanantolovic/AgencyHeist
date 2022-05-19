@@ -7,6 +7,6 @@ namespace MoneyHeist2.Entities.DTOs
         [JsonPropertyName("name")]
         public string? Name { get; set; }
         [JsonPropertyName("level")]
-        public string Level { get; set; }
+        public string? Level { get; set; }
     }
 }

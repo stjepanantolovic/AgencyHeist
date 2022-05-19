@@ -7,7 +7,7 @@ namespace MoneyHeist2.Services
 {
     public class MemberService
     {
-       private readonly DataContext _context;
+        private readonly DataContext _context;
         public MemberService(DataContext context)
         {
             _context = context;
@@ -15,31 +15,32 @@ namespace MoneyHeist2.Services
 
         public Member CreateMember(MemberRequest memberRequest)
         {
+            var existingMember = _context.Members.Where(m => m.Email == memberRequest.Email).FirstOrDefault();
+            if (existingMember != null)
+            {
+                throw new Exception($"Member with email {memberRequest.Email} already exists in database");
+            }
+            var upsertedSkillLevels = UpsertSkillsToDb(memberRequest.Skills);
+            var test = "";
+            var mainSkill = _context.Skill.Where(s => s.Name == memberRequest.MainSkill).FirstOrDefault();
             var member = new Member()
             {
-                Name = memberRequest.Name,
-                Email = memberRequest.Email,
-                MainSkill = memberRequest?.MainSkill == null ? null : new Skill()
-                {
-                    Name = memberRequest.MainSkill,
-                    SkillLevels = new List<SkillLevel>() { new SkillLevel()
-                    { Value =  memberRequest.Skills.Where(s => s.Name == memberRequest.MainSkill).Select(l => l.Level).FirstOrDefault() }}
-
-                },
+                Name = memberRequest?.Name,
+                Email = memberRequest?.Email,
+                MainSkillID = mainSkill.ID,
                 Sex = GetSex(memberRequest?.Name),
-                Skills = AddSkillsToDb(memberRequest?.Skills),
+                SkillLevels = upsertedSkillLevels,
                 Status = GetMemberStatus(memberRequest?.Status)
             };
-            _context.Members.Add(member);
+            _context.Members?.Add(member);
             return member;
         }
 
-        public static Skill CreateSkill(SkillRequest skillRequest, SkillLevel skillLevel)
+        public static Skill CreateSkill(SkillRequest skillRequest)
         {
             return new Skill()
             {
-                Name = skillRequest.Name,
-                SkillLevels = new List<SkillLevel>() { skillLevel }                
+                Name = skillRequest.Name
             };
         }
 
@@ -71,7 +72,7 @@ namespace MoneyHeist2.Services
 
         public ICollection<Skill>? AddSkillsToDb(ICollection<SkillRequest>? skillRequests)
         {
-            var skillLevels = _context.SkillLevels.ToList();
+
             if (skillRequests == null)
             {
                 return null;
@@ -80,39 +81,89 @@ namespace MoneyHeist2.Services
             var skills = new List<Skill>();
             foreach (var request in skillRequests)
             {
-                var skillLevel = skillLevels.Where(sl => sl.Value == request.Level).FirstOrDefault();
-                if (skillLevel == null)
-                {
-                    throw new Exception($"Skill level {request.Level} is not valid!");
-                }
                 skills.Add(
-                    CreateSkill(request, skillLevel)
+                    CreateSkill(request)
                     );
             }
-            _context.Skill.AddRange(skills);
+            _context.Skill?.AddRange(skills);
+            _context.SaveChanges();
             return skills;
         }
-        public ICollection<Skill>? UpsertSkillsToDb(ICollection<SkillRequest>? skillRequests)
+        public ICollection<SkillLevel>? UpsertSkillsToDb(ICollection<SkillRequest>? skillRequests)
         {
             if (skillRequests == null)
             {
                 return null;
             }
-            var existingSkills = _context.Skill.Where(s => skillRequests.Select(sr => sr.Name).ToList().Contains(s.Name)).ToList();            
+            var existingSkills = _context.Skill.Where(s => skillRequests.Select(sr => sr.Name).ToList().Contains(s.Name)).ToList();
+            if (existingSkills == null)
+            {
+                existingSkills = new List<Skill>();
+            }
             var skillReqsToBeAdded = skillRequests.Where(sr => !existingSkills.Select(es => es.Name).ToList().Contains(sr.Name)).ToList();
-            existingSkills.AddRange(AddSkillsToDb(skillReqsToBeAdded));
-            return existingSkills;
+
+            if (skillReqsToBeAdded != null)
+            {
+                existingSkills.AddRange(AddSkillsToDb(skillReqsToBeAdded));
+            }
+            return UpsertSkillSkillLevels(existingSkills, skillRequests.ToList());
+
+
         }
-        
+
 
         public Sex? GetSex(string? name)
         {
-            return name == null ? null : _context.Sex.Where(s => s.Name == name).FirstOrDefault();
+            return name == null ? null : _context.Sex?.Where(s => s.Name == name).FirstOrDefault();
         }
 
         public MemberStatus? GetMemberStatus(string? name)
         {
             return name == null ? null : _context.MemberStatus.Where(s => s.Name == name).FirstOrDefault();
+        }
+
+        public List<SkillLevel> UpsertSkillSkillLevels(List<Skill> skills, List<SkillRequest> skillRequests)
+        {
+            var skillIDs = skills.Select(x=>x.ID).ToList();            
+            var skillLevelsWithSkillIDs = _context.SkillLevels.Where(sl => skillIDs.Contains(sl.SkillID)).ToList();
+            if (skillLevelsWithSkillIDs == null)
+            {
+                skillLevelsWithSkillIDs = new List<SkillLevel>();
+            }
+            
+            var levels = _context.Levels.Where(x=> skillRequests.Select(x=>x.Level).Contains(x.Value)).ToList();
+
+            var existingSkillLevels = skillLevelsWithSkillIDs.Where(x => levels.Select(x=>x.ID).Contains(x.LevelID)).ToList();            
+
+            var skillIDToBeAdded = skillIDs.Where(si => !(existingSkillLevels.Select(sl => sl.SkillID).Contains(si))).ToList();
+
+            var skillLevelsToAdd = new List<SkillLevel>();
+            foreach (var skillID in skillIDToBeAdded)
+            {
+                var skill = skills.Where(s => s.ID == skillID).FirstOrDefault();
+                var skillRequest = skillRequests.Where(sr => sr.Name == skill.Name).FirstOrDefault();
+                var level = levels.Where(l => l.Value == skillRequest.Level).FirstOrDefault();
+                var skillLevel = new SkillLevel() { SkillID=skill.ID, LevelID=level.ID};
+                skillLevelsToAdd.Add(skillLevel);
+            }            
+
+            _context.SkillLevels.AddRange(skillLevelsToAdd);
+            _context.SaveChanges();
+            existingSkillLevels.AddRange(skillLevelsToAdd);
+            return existingSkillLevels;
+        }
+
+        public static bool ListsAreNotEmpty(List<List<dynamic>> lists)
+        {
+            foreach (var list in lists)
+            {
+                if (!(list != null && list.Count > 0))
+                {
+                    return false;
+                }
+
+            }
+            return true;
         }
     }
 }

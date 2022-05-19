@@ -6,38 +6,38 @@ namespace MoneyHeist2.Helpers
 {
     public static class MembeRequestFactory
     {    
-        public static Member CreateMember(MemberRequest memberRequest, IHeistRepository _repo)
-        {
-            return new Member()
-            {
-                Name = memberRequest.Name,
-                Email = memberRequest.Email,
-                MainSkill = memberRequest?.MainSkill == null ? null : new Skill()
-                {
-                    Name = memberRequest.MainSkill,
-                    SkillLevels = new List<SkillLevel>() { new SkillLevel()
-                    { Value =  memberRequest.Skills.Where(s => s.Name == memberRequest.MainSkill).Select(l => l.Level).FirstOrDefault() }}
+        //public static Member CreateMember(MemberRequest memberRequest, IHeistRepository _repo)
+        //{
+        //    //return new Member()
+        //    //{
+        //    //    Name = memberRequest.Name,
+        //    //    Email = memberRequest.Email,
+        //    //    MainSkill = memberRequest?.MainSkill == null ? null : new Skill()
+        //    //    {
+        //    //        Name = memberRequest.MainSkill,
+        //    //        SkillLevels = new List<Level>() { new Level()
+        //    //        { Value =  memberRequest.Skills.Where(s => s.Name == memberRequest.MainSkill).Select(l => l.Level).FirstOrDefault() }}
 
-                },
-                Sex = CreateSex(memberRequest?.Name),
-                Skills = CreateSkills(memberRequest?.Skills),
-                Status = new MemberStatus() { Name = memberRequest.Status }
+        //    //    },
+        //    //    Sex = CreateSex(memberRequest?.Name),
+        //    //    Skills = CreateSkills(memberRequest?.Skills),
+        //    //    Status = new MemberStatus() { Name = memberRequest?.Status }
 
-            };
-        }
+        //    //};
+        //}
 
         public static Skill CreateSkill(SkillRequest skillRequest)
         {
             return new Skill()
             {
                 Name = skillRequest.Name,
-                SkillLevels = new List<SkillLevel>() { CreateSkillLevel(skillRequest.Level) }
+                //SkillLevels = new List<Level>() { CreateSkillLevel(skillRequest.Level) }
             };
         }
 
-        public static SkillLevel CreateSkillLevel(string level)
+        public static Level CreateSkillLevel(string level)
         {
-            return new SkillLevel()
+            return new Level()
             {
                 Value = level
             };

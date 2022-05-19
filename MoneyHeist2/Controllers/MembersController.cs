@@ -23,11 +23,21 @@ namespace MoneyHeist2.Controllers
         [HttpPost]        
         public IActionResult CreateMember(MemberRequest memberRequest)
         {
-            _memberService.CreateMember(memberRequest);
-            if ( _repo.SaveAll())
-                return NoContent();
+            try
+            {
+                _memberService.CreateMember(memberRequest);
+                if (_repo.SaveAll())
+                    return Created("", 1);
+                return BadRequest("System is currently unavailable");
+            }
+            catch (Exception ex)
+            {
 
-            return BadRequest();
+                return BadRequest(ex.Message);
+            }
+            
+
+            
         }
     }
 }
