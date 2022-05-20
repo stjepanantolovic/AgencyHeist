@@ -9,7 +9,7 @@ namespace MoneyHeist2.Data.Repos
         void Delete<T>(T entity) where T : class;
         bool SaveAll();
         //PagedList<Member> GetMembers(MemberParams memberParams);
-        //Member GetMember(int id);             
-        
+        Member GetMember(Guid id);
+
     }
 }

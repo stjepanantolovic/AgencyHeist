@@ -13,8 +13,8 @@ namespace MoneyHeist2.Data
         public DbSet<Member> Members { get; set; }
         public DbSet<Sex> Sex { get; set; }
         public DbSet<Skill> Skill { get; set; }
-        public DbSet<Level> Levels { get; set; }
-        public DbSet<SkillLevel> SkillLevels { get; set; }
+        //public DbSet<Level> Levels { get; set; }
+        //public DbSet<SkillLevel> SkillLevels { get; set; }
         public DbSet<MemberStatus> MemberStatus { get; set; }
 
 
@@ -37,12 +37,16 @@ namespace MoneyHeist2.Data
                 .HasOne<Skill>(m => m.MainSkill);
             builder.Entity<Member>()
                 .HasOne<Sex>(m => m.Sex);
-
-            builder.Entity<SkillLevel>().HasIndex(entity => new { entity.SkillID, entity.LevelID }).IsUnique(true);
             builder.Entity<Member>()
-               .HasMany<SkillLevel>(m => m.SkillLevels)
-               .WithMany(s => s.Members);
-               
+                .HasMany<Skill>(m => m.Skills)
+                .WithMany(s => s.Members);
+            builder.Entity<Skill>().HasIndex(entity => new { entity.Name, entity.Level }).IsUnique(true);
+
+            //builder.Entity<SkillLevel>().HasIndex(entity => new { entity.SkillID, entity.LevelID }).IsUnique(true);
+            //builder.Entity<Member>()
+            //   .HasMany<SkillLevel>(m => m.SkillLevels)
+            //   .WithMany(s => s.Members);
+
 
             //builder.Entity<Skill>()
             //   .HasMany<SkillLevel>(s => s.SkillLevels)

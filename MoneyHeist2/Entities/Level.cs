@@ -14,6 +14,8 @@ namespace MoneyHeist2.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid ID { get; set; }
         [Required]
+        [RegularExpression(@"([*])")]
+        [MaxLength(10)]
         public string? Value { get; set; }
         //public ICollection<Skill> Skills { get; set; }  
     }

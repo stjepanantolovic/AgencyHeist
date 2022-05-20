@@ -30,11 +30,6 @@ namespace MoneyHeist2.Data.Repos
             else { return member; }
         }
 
-        public Member GetMember(int id)
-        {
-            throw new NotImplementedException();
-        }
-
         //public PagedList<Member> GetMembers(MemberParams memberParams)
         //{
         //    var members = new List<Member>();

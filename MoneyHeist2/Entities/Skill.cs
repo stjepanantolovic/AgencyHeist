@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MoneyHeist2.Entities
 {
-    [Index(nameof(Skill.Name), IsUnique = true)]
+    //[Index(nameof(Skill.Name), IsUnique = true)]
     public class Skill
     {
         //public Skill()
@@ -19,7 +19,11 @@ namespace MoneyHeist2.Entities
         public Guid ID { get; set; }
         [Required]
         public string? Name { get; set; }
-        //public ICollection<Member> Members { get; set; }
+        [Required]
+        [RegularExpression(@"([*])")]
+        [MaxLength(10)]
+        public string Level { get; set; }
+        public ICollection<Member> Members { get; set; }
         //public ICollection<SkillLevel> SkillLevels { get; set; }
     }
 }
