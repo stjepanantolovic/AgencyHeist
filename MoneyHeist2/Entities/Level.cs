@@ -11,6 +11,7 @@ namespace MoneyHeist2.Entities
         //{            
         //    this.Skills = new HashSet<Skill>();
         //}
+        [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid ID { get; set; }
         [Required]

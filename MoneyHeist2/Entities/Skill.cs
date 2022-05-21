@@ -19,7 +19,7 @@ namespace MoneyHeist2.Entities
         public Guid ID { get; set; }
         [Required]
         public string? Name { get; set; }
-        //public ICollection<Member> Members { get; set; }
+        //public ICollection<Level> Levels { get; set; }
         //public ICollection<SkillLevel> SkillLevels { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MoneyHeist2.Data.Repos;
 using MoneyHeist2.Entities.DTOs;
+using MoneyHeist2.Exceptions;
 using MoneyHeist2.Helpers;
 using MoneyHeist2.Services;
 
@@ -29,6 +30,12 @@ namespace MoneyHeist2.Controllers
                 if (_repo.SaveAll())
                     return Created("", 1);
                 return BadRequest("System is currently unavailable");
+            }
+            catch (HeistException hex)
+            {
+
+                //Log hex.Message
+                return BadRequest(hex.UserMessage);
             }
             catch (Exception ex)
             {
