@@ -120,3 +120,4 @@ C:\Users\Johny Bravo\source\repos\MoneyHeist2\AgencyHeist\MoneyHeist2\obj\Debug\
 C:\Users\Johny Bravo\source\repos\MoneyHeist2\AgencyHeist\MoneyHeist2\obj\Debug\net6.0\MoneyHeist2.pdb
 C:\Users\Johny Bravo\source\repos\MoneyHeist2\AgencyHeist\MoneyHeist2\obj\Debug\net6.0\MoneyHeist2.genruntimeconfig.cache
 C:\Users\Johny Bravo\source\repos\MoneyHeist2\AgencyHeist\MoneyHeist2\obj\Debug\net6.0\ref\MoneyHeist2.dll
+C:\Users\Johny Bravo\source\repos\MoneyHeist2\AgencyHeist\MoneyHeist2\bin\Debug\net6.0\Newtonsoft.Json.dll

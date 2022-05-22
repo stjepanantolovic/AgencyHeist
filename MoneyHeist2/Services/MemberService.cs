@@ -1,8 +1,11 @@
-﻿using MoneyHeist2.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using MoneyHeist2.Data;
 using MoneyHeist2.Data.Repos;
 using MoneyHeist2.Entities;
 using MoneyHeist2.Entities.DTOs;
 using MoneyHeist2.Exceptions;
+using MoneyHeist2.HelperServices;
+using Newtonsoft.Json;
 
 namespace MoneyHeist2.Services
 {
@@ -16,7 +19,62 @@ namespace MoneyHeist2.Services
 
         public Member GetMember(Guid id)
         {
-            return _context.Members.Where(m => m.ID == id).FirstOrDefault();
+            return _context.Members.Where(m => m.ID == id).Include(m => m.SkillLevels).Include(m => m.MainSkill).FirstOrDefault();
+        }
+
+        public List<SkillResponse> GetMemberSkills(ICollection<SkillLevel> skillLevels)
+        {
+            var response = new List<SkillResponse>();
+            var skillIDs = skillLevels.Select(m => m.SkillID);
+            var levelIDs = skillLevels.Select(m => m.LevelID);
+            var memberSkills = _context.Skill.Where(s => skillIDs.Contains(s.ID)).ToList();
+            var memberLevels = _context.Levels.Where(l => levelIDs.Contains(l.ID)).ToList();
+            foreach (var skillLevel in skillLevels)
+            {
+                var skillName = memberSkills.Where((s => s.ID == skillLevel.SkillID)).Select(s => s.Name).FirstOrDefault();
+                var levelValue = memberLevels.Where((s => s.ID == skillLevel.LevelID)).Select(s => s.Value).FirstOrDefault();
+                var memberSkill = new SkillResponse()
+                {
+                    Name = skillName,
+                    Level = levelValue
+                };
+                response.Add(memberSkill);
+            }
+            return response;
+        }
+
+        public void UpdateMemberSkills(Member member, UpdateMemberSkillsRequest request)
+        {
+            if (string.IsNullOrEmpty(request.MainSkill) && (request?.Skills == null || request.Skills.Count == 0))
+            {
+                throw new HeistException($"Main skill or skilss should be provided when updating member skills");
+            }
+
+            var mainSkillChanges = MemberHelperService.MemberMainSkillChanges(member?.MainSkill?.Name, request.MainSkill);
+            var memberSkills = _context.Skill.Where(sk => member.SkillLevels.Select(sl => sl.SkillID).ToList().Contains(sk.ID)).ToList();
+            if (mainSkillChanges && !MemberHelperService.SkillsContainsMainSkill(request.Skills, memberSkills, request?.MainSkill))
+            {
+                var userMessage = $"When Changing Member's main skill, Array of Skills in request shoud contain request's Main skill";
+                var systemMessage = $"[MemberService.UpdateMemberSkills] => When Changing Member's main skill, Array of Skills in request shoud contain request's Main skill. " +
+                                    $"UpdateMemberSkillsRequest: {JsonConvert.SerializeObject(request)}";
+                throw new HeistException(userMessage, systemMessage);
+            }
+            if (member.SkillLevels == null)
+            {
+                member.SkillLevels = new List<SkillLevel>();
+            }
+            var skillLevels = GetSkillLevelsFromSkillRequest(request.Skills);
+            if (skillLevels != null)
+            {
+                MemberHelperService.UpdateMemberSkillLevels(member, skillLevels.ToList());
+            }
+
+            if (mainSkillChanges)
+            {
+                member.MainSkillID = _context.Skill.Where(s => s.Name == request.MainSkill).Select(s => s.ID).FirstOrDefault();
+            }
+            _context.Members.Update(member);
+            _context.SaveChanges();
         }
 
         public Member CreateMember(MemberRequest memberRequest)

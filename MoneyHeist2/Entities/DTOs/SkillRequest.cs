@@ -9,4 +9,12 @@ namespace MoneyHeist2.Entities.DTOs
         [JsonPropertyName("level")]
         public string? Level { get; set; }
     }
+
+    public class SkillResponse
+    {
+        [JsonPropertyName("name")]
+        public string? Name { get; set; }
+        [JsonPropertyName("level")]
+        public string? Level { get; set; }
+    }
 }
