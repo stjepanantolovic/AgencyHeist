@@ -109,7 +109,7 @@ namespace MoneyHeist2.Services
             {
                 throw new Exception($"Member with email {memberRequest.Email} already exists in database");
             }
-            if (CheckForDoublesInList(memberRequest.Skills.ToList(), "Name"))
+            if (MemberHelperService.CheckForDoublesInSkillRequestList(memberRequest.Skills.ToList()))
             {
                 throw new Exception($"Member can not have two skill with same name");
             }
@@ -182,13 +182,7 @@ namespace MoneyHeist2.Services
 
         }
 
-        public bool CheckForDoublesInList(List<SkillRequest> list, string propertyName)
-        {
-            return list.GetType().GetProperties()
-                    .Where(property => property.Name.StartsWith(propertyName))
-                    .Count(property => property.GetValue(this, null) != null) >= 1;
-
-        }
+       
 
 
         public Sex? GetSex(string? name)
@@ -237,6 +231,21 @@ namespace MoneyHeist2.Services
             _context.SaveChanges();
             response.AddRange(skillLevelsToAdd);
             return response;
+        }
+
+        public List<Skill> GetSkillsFromSkillRequests(List<SkillRequest> request)
+        {
+            var skillNames = request.Select(s => s.Name).ToList();
+            return _context.Skill.Where(s => skillNames.Contains(s.Name)).ToList();
+        }
+
+        public List<Level>? GetLevelsFromSkillRequests(List<SkillRequest> request)
+        {
+            var levelValues = request.Select(s => s.Level).ToList();
+
+            return levelValues == null ? null : _context.Levels.Where(l => levelValues.Contains(l.Value)).ToList();
+
+
         }
     }
 }

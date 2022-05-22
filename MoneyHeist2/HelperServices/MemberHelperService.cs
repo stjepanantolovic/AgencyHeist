@@ -33,6 +33,12 @@ namespace MoneyHeist2.HelperServices
             }
         }
 
+        public static bool CheckForDoublesInSkillRequestList(List<SkillRequest> list)
+        {
+            return list.GroupBy(x => new { x.Name })
+                   .Where(x => x.Skip(1).Any()).Any();
 
+
+        }
     }
 }

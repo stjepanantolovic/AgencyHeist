@@ -16,6 +16,8 @@ namespace MoneyHeist2.Data
         public DbSet<Level> Levels { get; set; }
         public DbSet<SkillLevel> SkillLevels { get; set; }
         public DbSet<MemberStatus> MemberStatus { get; set; }
+        public DbSet<Heist> Heists { get; set; }
+        public DbSet<HeistSkillLevel> HeistSkillLevels { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -37,26 +39,20 @@ namespace MoneyHeist2.Data
                 .HasOne<Skill>(m => m.MainSkill);
             builder.Entity<Member>()
                 .HasOne<Sex>(m => m.Sex);
+            builder.Entity<Member>()
+              .HasMany<SkillLevel>(m => m.SkillLevels)
+              .WithMany(s => s.Members);
             builder.Entity<SkillLevel>()
                 .HasOne<Skill>(s => s.Skill);
             builder.Entity<SkillLevel>()
                .HasOne<Level>(s => s.Level);
 
             builder.Entity<SkillLevel>().HasIndex(entity => new { entity.SkillID, entity.LevelID }).IsUnique(true);
-            builder.Entity<Member>()
-               .HasMany<SkillLevel>(m => m.SkillLevels)
-               .WithMany(s => s.Members);
-               
+           
 
-            //builder.Entity<Skill>()
-            //   .HasMany<SkillLevel>(s => s.SkillLevels)
-            //   .WithMany(sl => sl.Skills);
-
-            //builder.Entity<Member>().Property(x => x.ID).HasDefaultValueSql("NEWID()");
-            //builder.Entity<MemberStatus>().Property(x => x.ID).HasDefaultValueSql("NEWID()");
-            //builder.Entity<Sex>().Property(x => x.ID).HasDefaultValueSql("NEWID()");
-            //builder.Entity<Skill>().Property(x => x.ID).HasDefaultValueSql("NEWID()");
-            //builder.Entity<SkillLevel>().Property(x => x.ID).HasDefaultValueSql("NEWID()");
+            builder.Entity<HeistSkillLevel>().HasOne(hsl => hsl.SkillLevel);
+            builder.Entity<Heist>().HasMany(h => h.HeistSkillLevels);
+                //.WithOne(hsl=>hsl.Heist);                       
         }
     }
 }

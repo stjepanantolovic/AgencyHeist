@@ -3,7 +3,7 @@
 namespace MoneyHeist2.Entities.DTOs
 {
     public class SkillRequest
-    {
+    {       
         [JsonPropertyName("name")]
         public string? Name { get; set; }
         [JsonPropertyName("level")]
