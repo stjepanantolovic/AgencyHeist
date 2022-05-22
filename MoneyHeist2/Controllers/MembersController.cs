@@ -21,14 +21,16 @@ namespace MoneyHeist2.Controllers
         }
 
         [Route("createMember")]
-        [HttpPost]        
+        [HttpPost]
         public IActionResult CreateMember(MemberRequest memberRequest)
         {
             try
             {
-                _memberService.CreateMember(memberRequest);
+                var member = _memberService.CreateMember(memberRequest);
                 if (_repo.SaveAll())
-                    return Created("", 1);
+                    return CreatedAtRoute(routeName: "GetMember",
+            routeValues: new { id = member.ID },
+            value: null);
                 return BadRequest("System is currently unavailable");
             }
             catch (HeistException hex)
@@ -42,9 +44,32 @@ namespace MoneyHeist2.Controllers
 
                 return BadRequest(ex.Message);
             }
-            
-
-            
         }
+
+        [HttpGet("{id}", Name = "GetMember")]
+        public IActionResult GetMember(Guid id)
+        {
+            try
+            {
+                var member = _memberService.GetMember(id);
+
+                if (member == null)
+                    return NotFound();
+
+                return Ok(member);
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+
+
+
+        }
+
+
+
+
     }
 }
