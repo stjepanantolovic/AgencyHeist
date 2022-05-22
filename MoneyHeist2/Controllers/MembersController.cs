@@ -118,7 +118,7 @@ namespace MoneyHeist2.Controllers
 
         [HttpDelete]
         [Route("{member_id}/skills/{skill_name}")]
-        public IActionResult GetMemberSkills(Guid member_id, string skill_name)
+        public IActionResult RemoveMemberSkills(Guid member_id, string skill_name)
         {
             var member = _memberService.GetMember(member_id);
 
