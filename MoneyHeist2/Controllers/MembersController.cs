@@ -116,7 +116,25 @@ namespace MoneyHeist2.Controllers
             return Ok(response);
         }
 
+        [HttpDelete]
+        [Route("{member_id}/skills/{skill_name}")]
+        public IActionResult GetMemberSkills(Guid member_id, string skill_name)
+        {
+            var member = _memberService.GetMember(member_id);
 
+            if (member == null)
+            {
+                return NotFound("Member does not exist ");
+            }
+
+            var skillToRemove = _memberService.GetSkill(skill_name);
+
+            if (skillToRemove== null || !member.SkillLevels.Select(sl=>sl.SkillID).Contains(skillToRemove.ID))
+            {
+                return NotFound();
+            }
+            return NoContent();
+        }
 
 
     }

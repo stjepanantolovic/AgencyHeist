@@ -22,6 +22,29 @@ namespace MoneyHeist2.Services
             return _context.Members.Where(m => m.ID == id).Include(m => m.SkillLevels).Include(m => m.MainSkill).FirstOrDefault();
         }
 
+        public Skill GetSkill(string skillName)
+        {
+            if (skillName == null)
+            {
+                return null;
+            }
+            return _context.Skill.Where(s => s.Name == skillName).FirstOrDefault();
+        }
+
+        public void RemoveMeberSkill(Member member, Skill skillToRemove)
+        {
+            var memberSkillLevelToRemove = member.SkillLevels.Where(sl => sl.SkillID == skillToRemove.ID).FirstOrDefault();
+            if (memberSkillLevelToRemove != null) { member.SkillLevels.Remove(memberSkillLevelToRemove); }
+            if (member.MainSkillID== skillToRemove.ID)
+            {
+                member.MainSkillID = null;
+                member.MainSkill = null;
+            }
+
+            _context.Members.Update(member);
+            _context.SaveChanges();
+
+        }
         public List<SkillResponse> GetMemberSkills(ICollection<SkillLevel> skillLevels)
         {
             var response = new List<SkillResponse>();
