@@ -1,5 +1,5 @@
-INSERT MemberStatus (Name) values
-('AVAILABLE'),
-('EXPIRED'),
-('INCARCERATED'),
-('RETIRED')
+INSERT MemberStatus (ID, Name) values
+(NEWID(), 'AVAILABLE'),
+(NEWID(), 'EXPIRED'),
+(NEWID(), 'INCARCERATED'),
+(NEWID(), 'RETIRED')
