@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MoneyHeist2.Data;
 
@@ -11,9 +12,10 @@ using MoneyHeist2.Data;
 namespace MoneyHeist2.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220522180423_AddHesitEntity")]
+    partial class AddHesitEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,23 +45,24 @@ namespace MoneyHeist2.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("EndTime")
+                    b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Location")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime?>("StartTime")
+                    b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
                     b.HasKey("ID");
 
                     b.HasIndex("Name")
-                        .IsUnique()
-                        .HasFilter("[Name] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("Heists");
                 });
@@ -70,7 +73,7 @@ namespace MoneyHeist2.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("HeistID")
+                    b.Property<Guid>("HeistID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("Members")
@@ -235,13 +238,17 @@ namespace MoneyHeist2.Migrations
 
             modelBuilder.Entity("MoneyHeist2.Entities.HeistSkillLevel", b =>
                 {
-                    b.HasOne("MoneyHeist2.Entities.Heist", null)
+                    b.HasOne("MoneyHeist2.Entities.Heist", "Heist")
                         .WithMany("HeistSkillLevels")
-                        .HasForeignKey("HeistID");
+                        .HasForeignKey("HeistID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("MoneyHeist2.Entities.SkillLevel", "SkillLevel")
                         .WithMany()
                         .HasForeignKey("SkillLevelID");
+
+                    b.Navigation("Heist");
 
                     b.Navigation("SkillLevel");
                 });
