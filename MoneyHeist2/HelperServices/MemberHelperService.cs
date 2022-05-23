@@ -12,10 +12,10 @@ namespace MoneyHeist2.HelperServices
                 var existingMemberSkillLevel = member.SkillLevels.Where(sl => sl.ID == updateSkillLevel.ID).FirstOrDefault();
                 if (existingMemberSkillLevel == null)
                 {
-                    var existingSkillLevelByName = member.SkillLevels.Where(msl => msl.SkillID == updateSkillLevel.SkillID).FirstOrDefault();
-                    if (existingSkillLevelByName != null)
+                    var existingSkillLevelBySkill = member.SkillLevels.Where(msl => msl.SkillID == updateSkillLevel.SkillID).FirstOrDefault();
+                    if (existingSkillLevelBySkill != null)
                     {
-                        member.SkillLevels.Remove(existingSkillLevelByName);
+                        member.SkillLevels.Remove(existingSkillLevelBySkill);
                     }
                     member.SkillLevels.Add(updateSkillLevel);
                 }

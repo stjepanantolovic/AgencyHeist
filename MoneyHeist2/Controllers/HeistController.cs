@@ -42,6 +42,7 @@ namespace MoneyHeist2.Controllers
             }
         }
 
+
         [HttpGet("{id}", Name = "GetHeist")]
         public IActionResult GetMember(Guid id)
         {
@@ -65,6 +66,53 @@ namespace MoneyHeist2.Controllers
 
                 return BadRequest(ex.Message);
             }
-        }       
+        }
+
+        [HttpPut]
+        [Route("{heist_id}/skills")]
+        public IActionResult UpdateHeistSkills(Guid heist_id, UpdateHeistSkillRequest request)
+        {
+            try
+            {
+                var heist = _heistService.GetHeist(heist_id);
+
+                if (heist == null)
+                    return NotFound();
+                _heistService.UpdateHeistSkills(heist, request);
+
+                var response = new ContentResult() { StatusCode = 204, };
+                var locationUrl = $"{heist_id}/skills";
+                Response.Headers.Add("Location", Request.Path.Value);
+
+                return response;
+            }
+            catch (HeistException he)
+            {
+                //Log he.Message
+                return BadRequest(he.UserMessage);
+            }
+
+            catch (Exception ex)
+            {
+                //LogDefineOptions ex.Message
+                return BadRequest("Unexpected error occured");
+            }
+        }
+
+        [HttpGet]
+        [Route("{heist_id}/skills")]
+        public IActionResult GetMemberSkills(Guid heist_id)
+        {
+            var heist = _heistService.GetHeist(heist_id);
+
+            if (heist == null)
+            {
+                return NotFound();
+            }
+
+            var response = new UpdateHeistSkillResponse() { Skills = _heistService.GetHeistSkillResponsFromHeistSkillLevels(heist.HeistSkillLevels) };           
+
+            return Ok(response);
+        }
     }
 }

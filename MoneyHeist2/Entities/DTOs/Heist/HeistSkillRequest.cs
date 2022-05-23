@@ -12,4 +12,15 @@ namespace MoneyHeist2.Entities.DTOs.Heist
         [JsonPropertyName("members")]
         public int? Members { get; set; }
     }
+
+    public class HeistSkillResponse
+    {
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+
+        [JsonPropertyName("level")]
+        public string Level { get; set; }
+        [JsonPropertyName("members")]
+        public int? Members { get; set; }
+    }
 }
