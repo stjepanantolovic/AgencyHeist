@@ -115,7 +115,7 @@ namespace MoneyHeist2.Services
                 Name = memberRequest?.Name,
                 Email = memberRequest?.Email,
                 MainSkillID = mainSkill.ID,
-                Sex = GetSex(memberRequest?.Name),
+                Sex = GetSex(memberRequest?.Sex),
                 SkillLevels = upsertedSkillLevels,
                 Status = GetMemberStatus(memberRequest?.Status)
             };
@@ -125,6 +125,7 @@ namespace MoneyHeist2.Services
 
         public Sex? GetSex(string? name)
         {
+            var sex = _context.Sex?.Where(s => s.Name == name).FirstOrDefault();
             return name == null ? null : _context.Sex?.Where(s => s.Name == name).FirstOrDefault();
         }
 

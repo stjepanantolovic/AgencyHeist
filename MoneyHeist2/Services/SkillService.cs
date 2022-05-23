@@ -48,6 +48,7 @@ namespace MoneyHeist2.Services
             var memberLevels = _context.Levels.Where(l => levelIDs.Contains(l.ID)).ToList();
             foreach (var heistSkillLevel in heistSkillLevels)
             {
+                var skillTest = heistSkillLevel.SkillLevel;
                 //var skillName = memberSkills.Where((s => s.ID == heistSkillLevel.SkillLevel.SkillID)).Select(s => s.Name).FirstOrDefault();
                 //var levelValue = memberLevels.Where((s => s.ID == heistSkillLevel.SkillLevel.LevelID)).Select(s => s.Value).FirstOrDefault();
                 var skillLevel = skillLevels.Where(sl => sl.ID == heistSkillLevel.SkillLevelID).FirstOrDefault();
