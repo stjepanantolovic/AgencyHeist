@@ -1,3 +1,3 @@
 # AgencyHeist
 
-#okinuti seeding skripte u fodleru 
+#U MSSQLu Okinuti seeding skripte u fodleru 
