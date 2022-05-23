@@ -35,6 +35,35 @@ namespace MoneyHeist2.Services
             return response;
         }
 
+        public List<HeistSkillResponse> GetSkillResponsFromSkillLevels(ICollection<HeistSkillLevel> heistSkillLevels)
+        {
+            //var skillIDs = heistSkillLevels.Select(m => m.SkillLevel.SkillID);
+            //var levelIDs = heistSkillLevels.Select(m => m.SkillLevel.LevelID);
+            var response = new List<HeistSkillResponse>();
+            var skillLevels = _context.SkillLevels.Where(sl => heistSkillLevels.Select(m => m.SkillLevelID).Contains(sl.ID));
+            var skillIDs = skillLevels.Select(m => m.SkillID);
+            var levelIDs = skillLevels.Select(m => m.LevelID);
+
+            var memberSkills = _context.Skill.Where(s => skillIDs.Contains(s.ID)).ToList();
+            var memberLevels = _context.Levels.Where(l => levelIDs.Contains(l.ID)).ToList();
+            foreach (var heistSkillLevel in heistSkillLevels)
+            {
+                //var skillName = memberSkills.Where((s => s.ID == heistSkillLevel.SkillLevel.SkillID)).Select(s => s.Name).FirstOrDefault();
+                //var levelValue = memberLevels.Where((s => s.ID == heistSkillLevel.SkillLevel.LevelID)).Select(s => s.Value).FirstOrDefault();
+                var skillLevel = skillLevels.Where(sl => sl.ID == heistSkillLevel.SkillLevelID).FirstOrDefault();
+                var skillName = memberSkills.Where((s => s.ID == skillLevel.SkillID)).Select(s => s.Name).FirstOrDefault();
+                var levelValue = memberLevels.Where((s => s.ID == skillLevel.LevelID)).Select(s => s.Value).FirstOrDefault();
+                var heistSkill = new HeistSkillResponse()
+                {
+                    Name = skillName,
+                    Level = levelValue,
+                    Members = heistSkillLevel.Members
+                };
+                response.Add(heistSkill);
+            }
+            return response;
+        }
+
         public ICollection<SkillLevel>? GetSkillLevelsFromSkillRequest(ICollection<SkillRequest>? skillRequests)
         {
             if (skillRequests == null)
@@ -55,6 +84,36 @@ namespace MoneyHeist2.Services
             return UpsertSkillLevels(existingSkills, skillRequests.ToList());
 
 
+        }
+
+        public ICollection<HeistSkillLevel>? GetHeistSkillLevelsFromSkillRequest(ICollection<HeistSkillRequest>? heistSkillRequests)
+        {
+            var response = new List<HeistSkillLevel>();
+            if (heistSkillRequests == null)
+            {
+                return null;
+            }
+
+            var skillRequests = heistSkillRequests.Select(hsr => new SkillRequest() { Name = hsr.Name, Level = hsr.Level }).ToList();
+            var skillLevels = GetSkillLevelsFromSkillRequest(skillRequests);
+            var skillsByName = GetSkillsFromSkillRequests(skillRequests);
+            var levelsByValue = GetLevelsFromSkillRequests(skillRequests);
+
+            foreach (var heistSkillReq in heistSkillRequests)
+            {
+                var skillID = skillsByName.Where(s => s.Name == heistSkillReq.Name).Select(s => s.ID).FirstOrDefault();
+                var levelID = levelsByValue.Where(s => s.Value == heistSkillReq.Level).Select(s => s.ID).FirstOrDefault();
+                var skillLevelID = skillLevels.Where(sl => sl.SkillID == skillID && sl.LevelID == levelID).Select(sl=>sl.ID).FirstOrDefault();
+                if (skillLevelID!=null)
+                {
+                    var newHeistSkillLevel = new HeistSkillLevel() { SkillLevelID = skillLevelID, Members = heistSkillReq.Members };
+                    response.Add(newHeistSkillLevel);
+                }   
+            }
+
+            _context.HeistSkillLevels.AddRange(response);
+            SaveAll();
+            return response;
         }
 
         public ICollection<Skill>? AddSkillsToDb(ICollection<SkillRequest>? skillRequests)

@@ -8,11 +8,7 @@ namespace MoneyHeist2.Entities
 {
     [Index(nameof(Member.Email), IsUnique = true)]
     public class Member
-    {
-        //public Member()
-        //{
-        //    Skills = new HashSet<Skill>();
-        //}
+    {        
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public Guid ID { get; set; }

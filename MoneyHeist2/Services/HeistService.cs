@@ -25,6 +25,15 @@ namespace MoneyHeist2.Services
             return _context.Heists.Where(h => h.ID == id).Include(h => h.HeistSkillLevels).FirstOrDefault();
         }
 
+        public List<HeistSkillResponse>? GetHeistSkillResponsFromHeistSkillLevels(List<HeistSkillLevel>? heistskillLevels)
+        {
+            if (heistskillLevels == null)
+            {
+                return null;
+            }
+            return _skillService.GetSkillResponsFromSkillLevels(heistskillLevels);
+        }
+
         public Heist CreateHeist(HeistRequest request)
         {
             IsHeistRequestOk(request);
@@ -49,6 +58,29 @@ namespace MoneyHeist2.Services
             }
             return true;
         }
+
+        public void UpdateHeistSkills(Heist heist, UpdateHeistSkillRequest request)
+        {
+
+
+            SkillHelperService.CheckForDoublesInList(request.Skills);
+
+
+            if (heist.HeistSkillLevels == null)
+            {
+                heist.HeistSkillLevels = new List<HeistSkillLevel>();
+            }
+            var heistSkillLevels = _skillService.GetHeistSkillLevelsFromSkillRequest(request.Skills);
+            if (heistSkillLevels != null)
+            {
+                HeistHelperService.UpdateHeistSkillLevels(heist, heistSkillLevels.ToList());
+            }
+
+
+            _context.Heists.Update(heist);
+            SaveAll();
+        }
+
 
         public bool SaveAll()
         {

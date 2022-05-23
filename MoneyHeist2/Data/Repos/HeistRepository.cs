@@ -35,25 +35,6 @@ namespace MoneyHeist2.Data.Repos
             throw new NotImplementedException();
         }
 
-        //public PagedList<Member> GetMembers(MemberParams memberParams)
-        //{
-        //    var members = new List<Member>();
-        //    if (memberParams?.UserID!=null)
-        //    {
-        //        members.Add(GetMember(memberParams.UserID.Value));
-        //    }
-        //    else if(memberParams?.MemberStatusIDs != null && memberParams.MemberStatusIDs.Count > 0)
-        //    {
-        //        members = _context.Members.Where(x => memberParams.MemberStatusIDs.Contains(x.StatusID.Value)).ToList();
-        //    }
-        //    //else if (memberParams?.SkillIDs != null && memberParams?.MemberStatusIDs?.Count > 0)
-        //    //{
-        //    //    members = _context.Members.Where(x => memberParams.SkillIDs.Intersect(x.Skills)).ToList();
-        //    //}
-
-        //    return PagedList<Member>.Create(members.AsQueryable(), memberParams.PageNumber, memberParams.PageSize);
-        //}
-
         public bool SaveAll()
         {
             return _context.SaveChanges() > 0;
