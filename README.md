@@ -1,3 +1,3 @@
 # AgencyHeist
 
-#U MSSQLu Run seeding script from folder
+#In MSSQLu Run seeding script from folder DbSeedingScripts
