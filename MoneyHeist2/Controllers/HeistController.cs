@@ -110,7 +110,7 @@ namespace MoneyHeist2.Controllers
                 return NotFound();
             }
 
-            var response = new UpdateHeistSkillResponse() { Skills = _heistService.GetHeistSkillResponsFromHeistSkillLevels(heist.HeistSkillLevels) };           
+            var response = new UpdateHeistSkillResponse() { Skills = _heistService.GetHeistSkillResponsFromHeistSkillLevels(heist.HeistSkillLevels.ToList()) };           
 
             return Ok(response);
         }
