@@ -1,3 +1,3 @@
 # AgencyHeist
 
-#U MSSQLu Okinuti seeding skripte u fodleru 
+#U MSSQLu Run seeding script from folder
