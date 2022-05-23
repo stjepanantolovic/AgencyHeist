@@ -14,7 +14,8 @@ namespace MoneyHeist2.Controllers
     public class MembersController : ControllerBase
     {
         private readonly IHeistRepository _repo;
-        private readonly MemberService _memberService;
+        private readonly MemberService _memberService;        
+
         public MembersController(IHeistRepository repo, MemberService memberService)
         {
             _repo = repo;
@@ -72,7 +73,7 @@ namespace MoneyHeist2.Controllers
         {
             try
             {
-                var member = _memberService.GetMember(member_id);
+                var member = _memberService.GetMemberWithSkills(member_id);
 
                 if (member == null)
                     return NotFound();
@@ -102,7 +103,7 @@ namespace MoneyHeist2.Controllers
         [Route("{member_id}/skills")]
         public IActionResult GetMemberSkills(Guid member_id)
         {            
-            var member = _memberService.GetMember(member_id);
+            var member = _memberService.GetMemberWithSkills(member_id);
 
             if (member == null)
             {
@@ -111,7 +112,7 @@ namespace MoneyHeist2.Controllers
 
             var response = new MemberSkillsResponse() { MainSkill=member.MainSkill.Name};
             
-            response.Skills = _memberService.GetMemberSkills(member.SkillLevels);
+            response.Skills = _memberService.GetSkillResponsFromMemberSkillLevels(member.SkillLevels.ToList());
 
             return Ok(response);
         }
@@ -120,14 +121,14 @@ namespace MoneyHeist2.Controllers
         [Route("{member_id}/skills/{skill_name}")]
         public IActionResult RemoveMemberSkills(Guid member_id, string skill_name)
         {
-            var member = _memberService.GetMember(member_id);
+            var member = _memberService.GetMemberWithSkills(member_id);
 
             if (member == null)
             {
                 return NotFound("Member does not exist ");
             }
 
-            var skillToRemove = _memberService.GetSkill(skill_name);
+            var skillToRemove = _memberService.GetMemberSkill(skill_name);
 
             if (skillToRemove== null || !member.SkillLevels.Select(sl=>sl.SkillID).Contains(skillToRemove.ID))
             {
