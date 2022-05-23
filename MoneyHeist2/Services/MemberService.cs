@@ -26,7 +26,7 @@ namespace MoneyHeist2.Services
 
         public Member GetMember(Guid id)
         {
-            return _context.Members.Where(m => m.ID == id).Include(m => m.MainSkill).FirstOrDefault();
+            return _context.Members.Where(m => m.ID == id).Include(m => m.MainSkill).Include(m=>m.Sex).Include(m=>m.Status).FirstOrDefault();
         }
 
         public void RemoveMeberSkill(Member member, Skill skillToRemove)
@@ -115,7 +115,7 @@ namespace MoneyHeist2.Services
                 Name = memberRequest?.Name,
                 Email = memberRequest?.Email,
                 MainSkillID = mainSkill.ID,
-                Sex = GetSex(memberRequest?.Name),
+                Sex = GetSex(memberRequest?.Sex),
                 SkillLevels = upsertedSkillLevels,
                 Status = GetMemberStatus(memberRequest?.Status)
             };
