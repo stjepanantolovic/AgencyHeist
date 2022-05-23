@@ -6,19 +6,18 @@ using MoneyHeist2.Entities.DTOs.Heist;
 namespace MoneyHeist2.HelperServices
 {
     public static class HeistHelperService
-    {
-        public static bool ListHasDoubles(List<HeistSkillRequest> list)
-        {
-            return list.GroupBy(x => new { x.Name, x.Level })
-                   .Where(x => x.Skip(1).Any()).Any();
-        }
+    {      
 
-        public static bool AreDatesOK(DateTime? startTime, DateTime? endTime)
+        public static void ChekcHeistDates(DateTime? startTime, DateTime? endTime)
         {
-            return startTime != null && endTime != null
+            var datesAreOk =  startTime != null && endTime != null
                 && startTime >= DateTime.Now
                 && startTime <= endTime;
 
+            if (!datesAreOk)
+            {
+                throw new HeistException($"Start Time {startTime} should not be in the past and endTime {endTime} should be after startTime");
+            }
         }
     }
 }
