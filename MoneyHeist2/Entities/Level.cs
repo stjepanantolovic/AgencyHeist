@@ -15,6 +15,7 @@ namespace MoneyHeist2.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid ID { get; set; }
         [Required]
+        [RegularExpression(@"([*]) * (^.{1, 10}$))", ErrorMessage ="Level Value can be expresed as 1 to 10 *")]
         public string? Value { get; set; }
         //public ICollection<Skill> Skills { get; set; }  
     }
