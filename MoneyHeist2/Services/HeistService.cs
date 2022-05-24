@@ -91,7 +91,9 @@ namespace MoneyHeist2.Services
                 var eligibleSkilleves = _context.SkillLevels.Where(
                     sl => sl.Skill.Name == requiredSkillLevel.Skill.Name
                     && sl.Level.Value.Length >= requiredSkillLevel.Level.Value.Length).ToList();
-                var eligibleMembersCount = _context.Members.Where(m => m.SkillLevels.Any(msl => eligibleSkilleves.Contains(msl))).Count();
+                var eligibleMembersCount = _context.Members.Where(m =>
+                !m.Heists.Any(mh => mh.StartTime <= heist.EndTime && heist.StartTime < mh.EndTime) &&
+                 m.SkillLevels.Any(msl => eligibleSkilleves.Contains(msl))).Count();
                 var eligibleHesitSkillResponse = new HeistSkillResponse() { Name = requiredSkillLevel.Skill.Name, Level = requiredSkillLevel.Level.Value, Members = eligibleMembersCount };
                 response.Skills.Add(eligibleHesitSkillResponse);
             }
