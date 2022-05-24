@@ -101,6 +101,13 @@ namespace MoneyHeist2.Services
             return response;
         }
 
+        public void ConfirmMembers(Guid heistID, List<string> membersToConfirm)
+        {
+            var heist = GetHeist(heistID);
+            var members = _context.Members.Where(m => membersToConfirm.Contains(m.Name)).ToList();
+            HeistHelperService.CheckHeistEligibleMembers(heist, members, membersToConfirm);
+        }
+
 
         public bool SaveAll()
         {

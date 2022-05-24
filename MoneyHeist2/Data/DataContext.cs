@@ -48,7 +48,7 @@ namespace MoneyHeist2.Data
                .HasOne<Level>(s => s.Level);
 
             builder.Entity<SkillLevel>().HasIndex(entity => new { entity.SkillID, entity.LevelID }).IsUnique(true);
-           
+            builder.Entity<Heist>().HasOne(h => h.Status);
 
             builder.Entity<HeistSkillLevel>().HasOne(hsl => hsl.SkillLevel);
             builder.Entity<Heist>().HasMany(h => h.HeistSkillLevels);

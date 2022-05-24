@@ -37,5 +37,10 @@ namespace MoneyHeist2.HelperServices
                 }
             }
         }
+
+        public static void CheckHeistEligibleMembers(Heist heist, List<Member> members, List<string> membersToConfirm)
+        {
+            
+        }
     }
 }
