@@ -22,5 +22,6 @@ namespace MoneyHeist2.Entities
         public Guid? MainSkillID { get; set; }
         public Guid? SexID { get; set; }
         public Guid? StatusID { get; set; }
+        public virtual ICollection<Heist> Heists { get; set; }
     }
 }

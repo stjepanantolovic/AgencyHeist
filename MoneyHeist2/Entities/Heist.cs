@@ -14,6 +14,7 @@ namespace MoneyHeist2.Entities
         public string? Location { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
-        public virtual List<HeistSkillLevel>? HeistSkillLevels { get; set; }
+        public virtual ICollection<HeistSkillLevel>? HeistSkillLevels { get; set; }
+        public virtual ICollection<Member> Members { get; set; }
     }
 }

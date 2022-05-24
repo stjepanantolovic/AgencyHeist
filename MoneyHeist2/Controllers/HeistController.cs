@@ -110,7 +110,23 @@ namespace MoneyHeist2.Controllers
                 return NotFound();
             }
 
-            var response = new UpdateHeistSkillResponse() { Skills = _heistService.GetHeistSkillResponsFromHeistSkillLevels(heist.HeistSkillLevels) };           
+            var response = new UpdateHeistSkillResponse() { Skills = _heistService.GetHeistSkillResponsFromHeistSkillLevels(heist.HeistSkillLevels.ToList()) };           
+
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("{heist_id}/eligible_members")]
+        public IActionResult GetEligibleMembers(Guid heist_id)
+        {
+            var heist = _heistService.GetHeist(heist_id);
+
+            if (heist == null)
+            {
+                return NotFound();
+            }
+
+            var response = _heistService.GetEligibleMembers(heist);
 
             return Ok(response);
         }

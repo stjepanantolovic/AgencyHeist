@@ -52,7 +52,12 @@ namespace MoneyHeist2.Data
 
             builder.Entity<HeistSkillLevel>().HasOne(hsl => hsl.SkillLevel);
             builder.Entity<Heist>().HasMany(h => h.HeistSkillLevels);
-                //.WithOne(hsl=>hsl.Heist);                       
+            //.WithOne(hsl=>hsl.Heist);
+            //
+
+            builder.Entity<Heist>()
+                .HasMany(h => h.Members)
+                .WithMany(m => m.Heists);
         }
     }
 }
